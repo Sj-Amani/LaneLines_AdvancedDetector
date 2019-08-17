@@ -31,11 +31,30 @@ The `challenge_video.mp4` video is an extra challenge which I tested on my pipel
 * Pickle
 
 ## How to run
+Run `python line_fit_video.py`. This will take the raw video file at 'project_video.mp4', and create an annotated output video at 'out.mp4'. Afterwards, it will display an example annotated image on screen.
+Please fell free to use your own vide instead of 'project_video.mp4' and check the output and save it with your own name if you like it.
+
+## Camera calibration
+The camera was calibrated using the chessboard images in 'camera_cal/*.jpg'. The following steps were performed for each calibration image:
+
+* Convert to grayscale
+* Find chessboard corners with OpenCV's `findChessboardCorners()` function, assuming a 9x6 board
+
+After the above steps were executed for all calibration images, I used OpenCV's `calibrateCamera()` function to calculate the distortion matrices. Using the distortion matrices, I undistort images using OpenCV's `undistort()` function.
+
+The following figure shows the undistorted image using camera calibration image 'camera_cal/calibration1.jpg':
+![calibration1](output_images/01_undistort_calibration1.png)
+
+The following figure shows the undistorted image using camera calibration image 'camera_cal/calibration5.jpg':
+![calibration5](output_images/02_undistort_calibration5.png)
+
+The final calibration matrices are saved in the pickle file 'calibrate_camera.p'
 
 Referencing The Project
 ---
 If you like my code and you want to use it in your project, please refer it like this:
 
 `Amani, Sajjad. "Advanced Lane Finding on the Road." GitHub, 16 July 2019, https://github.com/Sj-Amani/LaneLines_AdvancedDetector`
+
 
 
