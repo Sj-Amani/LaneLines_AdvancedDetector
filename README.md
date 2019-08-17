@@ -46,7 +46,7 @@ The following figure shows the undistorted image using camera calibration image 
 ![calibration1](output_images/01_undistort_calibration1.png)
 
 The following figure shows the undistorted image using camera calibration image 'camera_cal/calibration5.jpg':
-![calibration5](output_images/02_undistort_calibration5.png)
+![calibration5](output_images/01_undistort_calibration5.png)
 
 The final calibration matrices are saved in the pickle file 'calibrate_camera.p'
 
