@@ -1,1 +1,5 @@
-Please save your output images to this folder and include a description in your README of what each image shows.
+Images Description:
+
+02_undistort*.png:
+For all images in 'test_images/\*.jpg', the undistorted version of that image is saved as 'output_images/02ـundistort_\*.png'. The code to perform image undistortion is in 'calibrate_camera.py'. 
+

@@ -48,6 +48,18 @@ The following figures show two examples of undistorting image using camera calib
 
 The final calibration matrices are saved in the pickle file 'calibrate_camera.p'
 
+## Advanced Lane Detection Pipeline
+The following describes and illustrates the steps involved in the advanced lane detection pipeline. I will use this image as an input for my pipeline and I refer it as INPUT for simplicity:
+![orig](test_images/test3.jpg)
+
+### Undistort image
+Using the camera calibration matrices in 'calibrate_camera.p', we can undistort the input image. Below is the undistorted image of INPUT:
+
+![undist](output_images/02_undistort_test3.png)
+
+The code to perform camera calibration is in 'calibrate_camera.py'. For all images in 'test_images/\*.jpg', the undistorted version of that image is saved in 'output_images/02ـundistort_\*.png'.
+
+
 Referencing The Project
 ---
 If you like my code and you want to use it in your project, please refer it like this:

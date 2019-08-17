@@ -3,6 +3,7 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import pickle
+import glob
 
 
 def calibrate_camera():
@@ -84,8 +85,29 @@ if __name__ == '__main__':
 	#	pickle.dump(save_dict, f)
 	# or
 	pickle.dump( save_dict, open( "calibrate_camera.p", "wb" ) ) 
+	
+	
+	# For Group photos, use this part!
+	# Make a list of target images
+	images = glob.glob('test_images/*.jpg')
 
-	# Undistort example calibration image
+	# Step through the list of images and undistort them and then save them
+	for idx, fname in enumerate(images):	
+		# Undistort example calibration image
+		img = mpimg.imread(fname)
+		dst = cv2.undistort(img, mtx, dist, None, mtx)
+		# Visualize undistortion
+		f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
+		ax1.imshow(img)
+		ax1.set_title('Original Image', fontsize=20)
+		ax2.imshow(dst)
+		ax2.set_title('Undistorted Image', fontsize=20)
+		plt.savefig('output_images/02_undistort_'+fname[12:-4]+'.png')		
+		cv2.waitKey(500)
+		
+	cv2.destroyAllWindows()
+	
+	""" For Single photo, use this part!		
 	k = 5 	# camera image number
 	fname = 'calibration%s' % str(k)
 	img = mpimg.imread('camera_cal/'+fname+'.jpg')
@@ -97,6 +119,6 @@ if __name__ == '__main__':
 	ax1.set_title('Original Image', fontsize=20)
 	ax2.imshow(dst)
 	ax2.set_title('Undistorted Image', fontsize=20)
-	plt.savefig('output_images/01_undistort_'+fname+'.png')
-	
+	plt.savefig('output_images/02_undistort_'+fname+'.png')
+	"""
 	
