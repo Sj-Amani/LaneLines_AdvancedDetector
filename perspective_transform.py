@@ -15,7 +15,7 @@ def perspective_transform(img):
 	src = np.float32(
 		[[200, 720],
 		[1100, 720],
-		[595, 450],
+		[555, 450],
 		[685, 450]])
 	dst = np.float32(
 		[[300, 720],

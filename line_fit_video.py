@@ -15,7 +15,7 @@ from moviepy.editor import VideoFileClip
 save_dict = pickle.load( open( "calibrate_camera.p", "rb" ) )
 mtx = save_dict['mtx']
 dist = save_dict['dist']
-window_size = 5  				# how many frames for line smoothing
+window_size = 20  				# how many frames for line smoothing
 left_line = Line(n=window_size)
 right_line = Line(n=window_size)
 detected = False  				# did the fast line fit detect the lines?
@@ -103,7 +103,6 @@ if __name__ == '__main__':
 	# Annotate the video
 	annotate_video('project_video.mp4', 'out1.mp4')
 	#annotate_video('challenge_video.mp4', 'out2.mp4')
-	#annotate_video('harder_challenge_video.mp4', 'out3.mp4')
 	
 	# Show example annotated image on screen for sanity check
 	img_file = 'test_images/test2.jpg'

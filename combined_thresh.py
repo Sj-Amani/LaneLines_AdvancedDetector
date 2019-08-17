@@ -121,7 +121,7 @@ def combined_thresh(img):
 	mag_bin  = mag_thresh(img, sobel_kernel=5, mag_thresh=(5, 100))
 	dir_bin  = dir_threshold(img, sobel_kernel=7, thresh=(0.84, 1.117))
 	hls_bin  = hls_thresh(img, thresh=(170, 255))
-	hsv_bin  = hsv_thresh(img, np.array([10, 62, 100]), np.array([22, 230, 255]))
+	hsv_bin  = hsv_thresh(img, np.array([10, 50, 100]), np.array([22, 230, 255]))
 	gray_bin = gray_thresh(img, thresh = [150])
 
 	shape_bin = np.zeros_like(dir_bin)
