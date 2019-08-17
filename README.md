@@ -42,10 +42,8 @@ The camera was calibrated using the chessboard images in 'camera_cal/*.jpg'. The
 
 After the above steps were executed for all calibration images, I used OpenCV's `calibrateCamera()` function to calculate the distortion matrices. Using the distortion matrices, I undistort images using OpenCV's `undistort()` function.
 
-The following figure shows the undistorted image using camera calibration image 'camera_cal/calibration1.jpg':
+The following figures show two examples of undistorting image using camera calibration:
 ![calibration1](output_images/01_undistort_calibration1.png)
-
-The following figure shows the undistorted image using camera calibration image 'camera_cal/calibration5.jpg':
 ![calibration5](output_images/01_undistort_calibration5.png)
 
 The final calibration matrices are saved in the pickle file 'calibrate_camera.p'
