@@ -97,7 +97,7 @@ if __name__ == '__main__':
 		img = mpimg.imread(fname)
 		dst = cv2.undistort(img, mtx, dist, None, mtx)
 		# Visualize undistortion
-		f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
+		f, (ax1, ax2) = plt.subplots(1, 2, figsize=(10,5))
 		ax1.imshow(img)
 		ax1.set_title('Original Image', fontsize=20)
 		ax2.imshow(dst)
