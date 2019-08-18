@@ -59,6 +59,25 @@ Using the camera calibration matrices in 'calibrate_camera.p', we can undistort 
 
 The code to perform camera calibration is in 'calibrate_camera.py'. For all images in 'test_images/\*.jpg', the undistorted version of that image is saved in 'output_images/02ـundistort_\*.png'.
 
+### Thresholded binary image
+The next step is to create a thresholded binary image, taking the undistorted image as input. The goal is to identify pixels that are likely to be part of the lane lines. In particular, I perform the following:
+
+* Apply the following filters with thresholding, to create separate "binary images" corresponding to each individual filter
+  * Absolute horizontal Sobel operator on the image
+  * Sobel operator in both horizontal and vertical directions and calculate its magnitude
+  * Sobel operator to calculate the direction of the gradient
+  * Convert the image from RGB space to HLS space, and threshold the S channel
+  * Convert the image from RGB space to HSV space, and threshold the H, S, and V channels
+  * Convert the image from RGB space to Gray space, and threshold its magnitude.
+  
+* Combine the above binary images to create the final binary image
+
+Here is the example image, transformed into a binary image by combining the above thresholded binary filters:
+
+![binary](output_images/03_CombinedThresh_test3.png)
+
+The code to generate the thresholded binary image is in 'combined_thresh.py', in particular the function `combined_thresh()`. For all images in 'test_images/\*.jpg', the thresholded binary version of that image is saved in 'output_images/binary_\*.png'.
+
 
 Referencing The Project
 ---
