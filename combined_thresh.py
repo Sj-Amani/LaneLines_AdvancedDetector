@@ -3,6 +3,7 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import pickle
+import glob
 
 
 def abs_sobel_thresh(img, orient='x', thresh_min=20, thresh_max=100):
@@ -157,21 +158,39 @@ def combined_thresh(img):
 
 
 if __name__ == '__main__':
-	#img_file = 'test_images/straight_lines2.jpg'
-	#img_file = 'test_images/test5.jpg' 
-	img_file = 'test_images/For_Challenge/challenge_video04.jpg'
-	#img_file = 'test_images/For_Challenge/harder_challenge_video01.jpg'
 
 	with open('calibrate_camera.p', 'rb') as f:
 		save_dict = pickle.load(f)
 	mtx = save_dict['mtx']
 	dist = save_dict['dist']
 
+	# For Group photos, use this part!
+	# Make a list of target images
+	images = glob.glob('test_images/*.jpg')
+
+	# Step through the list of images and undistort them and then save them
+	for idx, fname in enumerate(images):	
+		# Undistort example calibration image
+		img = mpimg.imread(fname)
+		dst = cv2.undistort(img, mtx, dist, None, mtx)
+		combined, abs_bin, mag_bin, dir_bin, hls_bin, hsv_bin, gray_bin = combined_thresh(dst)
+		# Visualize undistortion
+		f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
+		ax1.imshow(img, cmap='gray', vmin=0, vmax=1)
+		ax1.set_title('Original Image', fontsize=20)
+		ax2.imshow(combined, cmap='gray', vmin=0, vmax=1)
+		ax2.set_title('Filtered Image', fontsize=20)
+		plt.savefig('output_images/03_CombinedThresh_'+fname[12:-4]+'.png')		
+		cv2.waitKey(500)
+		
+	cv2.destroyAllWindows()
+	
+	""" For Single photo, use this part!
+	img_file = 'test_images/For_Challenge/challenge_video04.jpg'
 	img = mpimg.imread(img_file)
 	img = cv2.undistort(img, mtx, dist, None, mtx)
 
 	combined, abs_bin, mag_bin, dir_bin, hls_bin, hsv_bin, gray_bin = combined_thresh(img)
-
 	plt.subplot(3, 3, 1)
 	plt.imshow(abs_bin, cmap='gray', vmin=0, vmax=1)
 	plt.subplot(3, 3, 2)
@@ -188,6 +207,6 @@ if __name__ == '__main__':
 	plt.imshow(hsv_bin, cmap='gray', vmin=0, vmax=1)
 	plt.subplot(3, 3, 9)
 	plt.imshow(gray_bin, cmap='gray', vmin=0, vmax=1)
-
 	plt.tight_layout()
 	plt.show()
+	"""

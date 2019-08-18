@@ -3,3 +3,5 @@ Images Description:
 02_undistort*.png:
 For all images in 'test_images/\*.jpg', the undistorted version of that image is saved as 'output_images/02ـundistort_\*.png'. The code to perform image undistortion is in 'calibrate_camera.py'. 
 
+03_CombinedThresh*.png
+For all images in 'test_images/\*.jpg', the thresholded binary version of that image is saved as 'output_images/binary_\*.png'. The code to generate the thresholded binary image is in 'combined_thresh.py', in particular the function `combined_thresh()`.
