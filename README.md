@@ -76,7 +76,18 @@ Here is the example image, transformed into a binary image by combining the abov
 
 ![binary](output_images/03_CombinedThresh_test3.png)
 
-The code to generate the thresholded binary image is in 'combined_thresh.py', in particular the function `combined_thresh()`. For all images in 'test_images/\*.jpg', the thresholded binary version of that image is saved in 'output_images/binary_\*.png'.
+The code to generate the thresholded binary image is in 'combined_thresh.py', in particular the function `combined_thresh()`. For all images in 'test_images/\*.jpg', the thresholded binary version of that image is saved in 'output_images/03_CombinedThresh_\*.png'.
+
+### Perspective transform
+Given the thresholded binary image, the next step is to perform a perspective transform. The goal is to transform the image such that we get a "bird's eye view" of the lane, which enables us to fit a curved line to the lane lines (e.g. polynomial fit). An alternative to this is to "crop" an area of the original image that is most likely to have the lane line pixels.
+
+To accomplish the perspective transform, we use OpenCV's `getPerspectiveTransform()` and `warpPerspective()` functions. I hard-code the source and destination points for the perspective transform. The source and destination points were visually determined by manual inspection, although an important enhancement would be to automatically determine these points.
+
+Here is the example image, after applying perspective transform:
+
+![warped](output_images/04_warped_test3.png)
+
+The code to perform perspective transform is in 'perspective_transform.py', in particular the function `perspective_transform()`. For all images in 'test_images/\*.jpg', the warped version of that image (i.e. post-perspective-transform) is saved in 'output_images/04_warped_\*.png'.
 
 
 Referencing The Project

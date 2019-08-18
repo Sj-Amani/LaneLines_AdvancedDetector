@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import pickle
 from combined_thresh import combined_thresh
-
+import glob
 
 def perspective_transform(img):
 	"""
@@ -15,7 +15,7 @@ def perspective_transform(img):
 	src = np.float32(
 		[[200, 720],
 		[1100, 720],
-		[555, 450],
+		[595, 450],
 		[685, 450]])
 	dst = np.float32(
 		[[300, 720],
@@ -33,13 +33,40 @@ def perspective_transform(img):
 
 
 if __name__ == '__main__':
-	img_file = 'test_images/test5.jpg'
+	
 
 	with open('calibrate_camera.p', 'rb') as f:
 		save_dict = pickle.load(f)
 	mtx = save_dict['mtx']
 	dist = save_dict['dist']
 
+	
+	# For Group photos, use this part!
+	# Make a list of target images
+	images = glob.glob('test_images/*.jpg')
+
+	# Step through the list of images and undistort them and then save them
+	for idx, fname in enumerate(images):	
+		# Undistort example calibration image
+		img = mpimg.imread(fname)
+		dst = cv2.undistort(img, mtx, dist, None, mtx)
+		combined, abs_bin, mag_bin, dir_bin, hls_bin, hsv_bin, gray_bin = combined_thresh(dst)
+		warped, unwarped, m, m_inv = perspective_transform(combined)
+		# Visualize undistortion
+		f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
+		ax1.imshow(img)
+		ax1.set_title('Original Image', fontsize=20)
+		ax2.imshow(warped, cmap='gray', vmin=0, vmax=1)
+		ax2.set_title('Warped Image', fontsize=20)
+		plt.savefig('output_images/04_warped_'+fname[12:-4]+'.png')
+		plt.show()		
+		cv2.waitKey(500)
+		cv2.destroyAllWindows()
+	
+	""" 
+	
+	# For Single photo, use this part!
+	img_file = 'test_images/test5.jpg'
 	img = mpimg.imread(img_file)
 	img = cv2.undistort(img, mtx, dist, None, mtx)
 
@@ -52,3 +79,4 @@ if __name__ == '__main__':
 
 	plt.imshow(unwarped, cmap='gray', vmin=0, vmax=1)
 	plt.show()
+	"""

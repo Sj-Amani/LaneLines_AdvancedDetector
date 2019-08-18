@@ -86,7 +86,7 @@ if __name__ == '__main__':
 	# or
 	pickle.dump( save_dict, open( "calibrate_camera.p", "wb" ) ) 
 	
-	
+	"""
 	# For Group photos, use this part!
 	# Make a list of target images
 	images = glob.glob('test_images/*.jpg')
@@ -103,11 +103,14 @@ if __name__ == '__main__':
 		ax2.imshow(dst)
 		ax2.set_title('Undistorted Image', fontsize=20)
 		plt.savefig('output_images/02_undistort_'+fname[12:-4]+'.png')		
+		plt.show()
 		cv2.waitKey(500)
 		
 	cv2.destroyAllWindows()
 	
-	""" For Single photo, use this part!		
+	""" 
+	
+	# For Single photo, use this part!		
 	k = 5 	# camera image number
 	fname = 'calibration%s' % str(k)
 	img = mpimg.imread('camera_cal/'+fname+'.jpg')
@@ -119,6 +122,7 @@ if __name__ == '__main__':
 	ax1.set_title('Original Image', fontsize=20)
 	ax2.imshow(dst)
 	ax2.set_title('Undistorted Image', fontsize=20)
-	plt.savefig('output_images/02_undistort_'+fname+'.png')
-	"""
+	plt.show()
+	# plt.savefig('output_images/02_undistort_'+fname+'.png')
+	
 	

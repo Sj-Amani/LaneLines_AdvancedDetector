@@ -163,7 +163,7 @@ if __name__ == '__main__':
 		save_dict = pickle.load(f)
 	mtx = save_dict['mtx']
 	dist = save_dict['dist']
-
+	"""
 	# For Group photos, use this part!
 	# Make a list of target images
 	images = glob.glob('test_images/*.jpg')
@@ -185,7 +185,8 @@ if __name__ == '__main__':
 		
 	cv2.destroyAllWindows()
 	
-	""" For Single photo, use this part!
+	""" 
+	# For Single photo, use this part!
 	img_file = 'test_images/For_Challenge/challenge_video04.jpg'
 	img = mpimg.imread(img_file)
 	img = cv2.undistort(img, mtx, dist, None, mtx)
@@ -209,4 +210,4 @@ if __name__ == '__main__':
 	plt.imshow(gray_bin, cmap='gray', vmin=0, vmax=1)
 	plt.tight_layout()
 	plt.show()
-	"""
+	
