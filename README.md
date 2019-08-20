@@ -31,6 +31,7 @@ In this project, I used and improved the parts of this GitHub repo: https://gith
 * OpenCV-Python
 * Matplotlib
 * Pickle
+* Glob
 
 ## How to run
 Run `python line_fit_video.py`. This will take the raw video file at 'project_video.mp4', and create an annotated output video at 'out.mp4'. Afterwards, it will display an example annotated image on screen.
@@ -152,7 +153,7 @@ Referencing The Project
 ---
 If you like my code and you want to use it in your project, please refer it like this:
 
-`Amani, Sajjad. "Advanced Lane Finding on the Road." GitHub, 16 July 2019, https://github.com/Sj-Amani/LaneLines_AdvancedDetector`
+`Amani, Sajjad. "Advanced Lane Finding on the Road." GitHub, 21 August 2019, https://github.com/Sj-Amani/LaneLines_AdvancedDetector`
 
 
 
