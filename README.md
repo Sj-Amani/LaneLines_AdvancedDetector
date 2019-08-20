@@ -74,7 +74,7 @@ The next step is to create a thresholded binary image, taking the undistorted im
 
 Here is the example image, transformed into a binary image by combining the above thresholded binary filters:
 
-![binary](output_images/03_CombinedThresh_test3.png)
+![CombinedThresh](output_images/03_CombinedThresh_test3.png)
 
 The code to generate the thresholded binary image is in 'combined_thresh.py', in particular the function `combined_thresh()`. For all images in 'test_images/\*.jpg', the thresholded binary version of that image is saved in 'output_images/03_CombinedThresh_\*.png'.
 
@@ -89,6 +89,26 @@ Here is the example image, after applying perspective transform:
 
 The code to perform perspective transform is in 'perspective_transform.py', in particular the function `perspective_transform()`. For all images in 'test_images/\*.jpg', the warped version of that image (i.e. post-perspective-transform) is saved in 'output_images/04_warped_\*.png'.
 
+### Polynomial fit
+Given the warped binary image from the previous step, I now fit a 2nd order polynomial to both left and right lane lines. In particular, I perform the following:
+
+* Calculate a histogram of the bottom half of the image
+* Partition the image into 9 horizontal slices
+* Starting from the bottom slice, enclose a 200 pixel wide window around the left peak and right peak of the histogram (split the histogram in half vertically)
+* Go up the horizontal window slices to find pixels that are likely to be part of the left and right lanes, recentering the sliding windows if the number of matched point are not enough
+* Given 2 groups of pixels (left and right lane line candidate pixels), fit a 2nd order polynomial to each group, which represents the estimated left and right lane lines
+
+The code to perform the above is in the `line_fit()` function of 'line_fit.py'.
+
+Since our goal is to find lane lines from a video stream, we can take advantage of the temporal correlation between video frames.
+
+Given the polynomial fit calculated from the previous video frame, one performance enhancement we can implement is to search +/- 100 pixels horizontally from the previously predicted lane lines. Then we simply perform a 2nd order polynomial fit to those pixels found from our quick search. In case we don't find enough pixels, we can return an error (e.g. `return None`), and the function's caller would ignore the current frame (i.e. keep the lane lines the same) and be sure to perform a full search on the next frame. Overall, this will improve the speed of the lane detector, useful if we were to use this detector in a production self-driving car. The code to perform an abbreviated search is in the `tune_fit()` function of 'line_fit.py'.
+
+Another enhancement to exploit the temporal correlation is to smooth-out the polynomial fit parameters. The benefit to doing so would be to make the detector more robust to noisy input. I used a simple moving average of the polynomial coefficients (3 values per lane line) for the most recent 20 video frames. The code to perform this smoothing is in the function `add_fit()` of the class `Line` in the file 'Line.py'. The `Line` class was used as a helper for this smoothing function specifically, and `Line` instances are global objects in 'line_fit.py'.
+
+Below is an illustration of the output of the polynomial fit, for our original example image. For all images in 'test_images/\*.jpg', the polynomial-fit-annotated version of that image is saved in 'output_images/polyfit_\*.png'.
+
+![polyfit](output_images/05_polyfit_test3.png)
 
 Referencing The Project
 ---

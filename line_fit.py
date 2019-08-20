@@ -5,6 +5,7 @@ import matplotlib.image as mpimg
 import pickle
 from combined_thresh import combined_thresh
 from perspective_transform import perspective_transform
+import glob
 
 
 def line_fit(binary_warped):
@@ -217,6 +218,17 @@ def viz2(binary_warped, ret, save_file=None):
 	if save_file is None:
 		plt.show()
 	else:
+		f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
+		ax1.imshow(binary_warped, cmap='gray', vmin=0, vmax=1)
+		ax1.set_title('Warped Image', fontsize=20)
+		ax2.imshow(result)
+		ax2.plot(left_fitx, ploty, color='yellow')
+		ax2.plot(right_fitx, ploty, color='yellow')
+		#ax2.xlim(0, 1280)
+		#ax2.ylim(720, 0)
+		ax2.set_title('Polyfit Image', fontsize=20)
+		plt.xlim(0, 1280)
+		plt.ylim(720, 0)
 		plt.savefig(save_file)
 	plt.gcf().clear()
 
@@ -301,3 +313,109 @@ def final_viz(undist, left_fit, right_fit, m_inv, left_curve, right_curve, vehic
 	result = cv2.putText(result, label_str, (30,70), 0, 1, (0,0,0), 2, cv2.LINE_AA)
 
 	return result
+
+if __name__ == '__main__':
+	
+
+	with open('calibrate_camera.p', 'rb') as f:
+		save_dict = pickle.load(f)
+	mtx = save_dict['mtx']
+	dist = save_dict['dist']
+
+	
+	# For Group photos, use this part!
+	# Make a list of target images
+	images = glob.glob('test_images/*.jpg')
+
+	# Step through the list of images and undistort them and then save them
+	for idx, fname in enumerate(images):	
+		# Undistort example calibration image
+		img = mpimg.imread(fname)
+		undist = cv2.undistort(img, mtx, dist, None, mtx)
+		combined, abs_bin, mag_bin, dir_bin, hls_bin, hsv_bin, gray_bin = combined_thresh(undist)
+		# Perspective transform
+		warped, unwarped, m, m_inv = perspective_transform(combined)
+		
+		# Polynomial fit
+		ret = line_fit(warped)
+		left_fit = ret['left_fit']
+		right_fit = ret['right_fit']
+		nonzerox = ret['nonzerox']
+		nonzeroy = ret['nonzeroy']
+		left_lane_inds = ret['left_lane_inds']
+		right_lane_inds = ret['right_lane_inds']
+		save_file = 'output_images/05_polyfit_'+fname[12:-4]+'.png'
+		viz2(warped, ret, save_file= save_file)		
+
+		# Do full annotation on original image
+		# Code is the same as in 'line_fit_video.py'
+		left_curve, right_curve = calc_curve(left_lane_inds, right_lane_inds, nonzerox, nonzeroy)
+
+		bottom_y = undist.shape[0] - 1
+		bottom_x_left = left_fit[0]*(bottom_y**2) + left_fit[1]*bottom_y + left_fit[2]
+		bottom_x_right = right_fit[0]*(bottom_y**2) + right_fit[1]*bottom_y + right_fit[2]
+		vehicle_offset = undist.shape[1]/2 - (bottom_x_left + bottom_x_right)/2
+
+		xm_per_pix = 3.7/700 # meters per pixel in x dimension
+		vehicle_offset *= xm_per_pix
+
+		final_viz_img = final_viz(undist, left_fit, right_fit, m_inv, left_curve, right_curve, vehicle_offset)
+	
+		
+		# Visualize undistortion
+		f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
+		ax1.imshow(img)
+		ax1.set_title('Original Image', fontsize=20)
+		ax2.imshow(final_viz_img)
+		ax2.set_title('Annotated Image', fontsize=20)
+		plt.savefig('output_images/06_annotated_'+fname[12:-4]+'.png')
+		plt.show()		
+		cv2.waitKey(500)
+		cv2.destroyAllWindows()
+	
+	""" 
+	
+	# For Single photo, use this part!
+	fname = 'test_images/test5.jpg'
+	img = mpimg.imread(fname)
+	undist = cv2.undistort(img, mtx, dist, None, mtx)
+
+	combined, abs_bin, mag_bin, dir_bin, hls_bin, hsv_bin, gray_bin = combined_thresh(undist)
+
+	warped, unwarped, m, m_inv = perspective_transform(combined)
+	
+	# Polynomial fit
+	ret = line_fit(warped)
+	left_fit = ret['left_fit']
+	right_fit = ret['right_fit']
+	nonzerox = ret['nonzerox']
+	nonzeroy = ret['nonzeroy']
+	left_lane_inds = ret['left_lane_inds']
+	right_lane_inds = ret['right_lane_inds']
+	save_file = 'output_images/05_polyfit_'+fname[12:-4]+'.png'
+	#viz2(img, ret, save_file= save_file)  # For saving
+	viz2(img, ret, save_file= None)
+	
+	# Do full annotation on original image
+	# Code is the same as in 'line_fit_video.py'
+	left_curve, right_curve = calc_curve(left_lane_inds, right_lane_inds, nonzerox, nonzeroy)
+
+	bottom_y = undist.shape[0] - 1
+	bottom_x_left = left_fit[0]*(bottom_y**2) + left_fit[1]*bottom_y + left_fit[2]
+	bottom_x_right = right_fit[0]*(bottom_y**2) + right_fit[1]*bottom_y + right_fit[2]
+	vehicle_offset = undist.shape[1]/2 - (bottom_x_left + bottom_x_right)/2
+
+	xm_per_pix = 3.7/700 # meters per pixel in x dimension
+	vehicle_offset *= xm_per_pix
+
+	final_viz_img = final_viz(undist, left_fit, right_fit, m_inv, left_curve, right_curve, vehicle_offset)
+
+	# Visualize undistortion
+	f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
+	ax1.imshow(img)
+	ax1.set_title('Original Image', fontsize=20)
+	ax2.imshow(final_viz_img)
+	ax2.set_title('Annotated Image', fontsize=20)
+	plt.savefig('output_images/06_annotated_'+fname[12:-4]+'.png')
+	plt.show()		
+	"""
