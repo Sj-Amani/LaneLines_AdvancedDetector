@@ -22,6 +22,8 @@ I saved the examples of the output from each stage of my pipeline in the folder 
 
 The `challenge_video.mp4` video is an extra challenge which I tested on my pipeline under somewhat trickier conditions. My proposed pipline works on it, too. 
 
+In this project, I used and improved the parts of this GitHub repo: https://github.com/georgesung/advanced_lane_detection.
+
 ## Dependencies
 
 * Python 3.5
@@ -74,7 +76,7 @@ The next step is to create a thresholded binary image, taking the undistorted im
 
 Here is the example image, transformed into a binary image by combining the above thresholded binary filters:
 
-![CombinedThresh](output_images/03_CombinedThresh_test3.png)
+![combinedThresh](output_images/03_CombinedThresh_test3.png)
 
 The code to generate the thresholded binary image is in 'combined_thresh.py', in particular the function `combined_thresh()`. For all images in 'test_images/\*.jpg', the thresholded binary version of that image is saved in 'output_images/03_CombinedThresh_\*.png'.
 
@@ -106,9 +108,45 @@ Given the polynomial fit calculated from the previous video frame, one performan
 
 Another enhancement to exploit the temporal correlation is to smooth-out the polynomial fit parameters. The benefit to doing so would be to make the detector more robust to noisy input. I used a simple moving average of the polynomial coefficients (3 values per lane line) for the most recent 20 video frames. The code to perform this smoothing is in the function `add_fit()` of the class `Line` in the file 'Line.py'. The `Line` class was used as a helper for this smoothing function specifically, and `Line` instances are global objects in 'line_fit.py'.
 
-Below is an illustration of the output of the polynomial fit, for our original example image. For all images in 'test_images/\*.jpg', the polynomial-fit-annotated version of that image is saved in 'output_images/polyfit_\*.png'.
+Below is an illustration of the output of the polynomial fit, for our original example image. For all images in 'test_images/\*.jpg', the polynomial-fit-annotated version of that image is saved in 'output_images/05_polyfit_\*.png'.
 
 ![polyfit](output_images/05_polyfit_test3.png)
+
+### Radius of curvature
+Given the polynomial fit for the left and right lane lines, we can calculate the radius of curvature for each line according to formulas presented [here](http://www.intmath.com/applications-differentiation/8-radius-curvature.php). We can also convert the distance units from pixels to meters, assuming 30 meters per 720 pixels in the vertical direction, and 3.7 meters per 700 pixels in the horizontal direction.
+
+Finally, we average the radius of curvature for the left and right lane lines. This value is shown in the final video's annotation.
+
+The code to calculate the radius of curvature is in the function `calc_curve()` in 'line_fit.py'.
+
+### Vehicle offset from lane center
+Given the polynomial fit for the left and right lane lines, we can calculate the vehicle's offset from the lane center. The vehicle's offset from the center is annotated in the final video. I made the same assumptions as before when converting from pixels to meters.
+
+To calculate the vehicle's offset from the center of the lane line, we assume the vehicle's center is the center of the image. I calculated the lane's center as the mean x value of the bottom x value of the left lane line, and bottom x value of the right lane line. The offset is simply the vehicle's center x value (i.e. center x value of the image) minus the lane's center x value.
+
+The code to calculate the vehicle's lane offset is in the function `calc_vehicle_offset()` in 'line_fit.py'.
+
+### Annotate original image with lane area
+Given all the above, we can annotate the original image with the lane area, and information about the lane curvature and vehicle offset. Below are the steps to do so:
+
+* Create a blank image, and draw our polyfit lines (estimated left and right lane lines)
+* Fill the area between the lines (with green color)
+* Use the inverse warp matrix calculated from the perspective transform, to "unwarp" the above such that it is aligned with the original image's perspective
+* Overlay the above annotation on the original image
+* Add text to the original image to display lane curvature and vehicle offset
+
+The code to perform the above is in the function `final_viz()` in 'line_fit.py'.
+
+Below is the final annotated version of our original image. For all images in 'test_images/\*.jpg', the final annotated version of that image is saved in 'output_images/06_annotated_\*.png'.
+
+![annotated](output_images/06_annotated_test3.png)
+
+## Discussion
+Here, I'll talk about the approach I took in the advance lane finding using computer vision. I applied the proposed method on tow cases: project_video.mp4 and challenge_video.mp4. It worked but I believe that the results could be even better if we can improve the code in the following challenging parts:
+ * combination of different filters: In this part, there are different senarios for applying the filters to make the binary image. The concept that I followed is based on human vision logic. It means that lane is detected in an image when all color, shape and direction filters have true values. 
+ * automatically detect the region of interest for perspective transform: In my code the src and dst points are considered as static points. Figuring out to make it dynamic, would improve the lane detection performance at the final results.
+ * polynomial fit: There are different methods that we can fit a line for left and right lanes more accurate than the one we used here (2nd order). Improving this part can improve the final results.
+ * There are multiple scenarios where this lane finder would not work. For example, in bad weather conditions (fog, rain, night, ...). Also, it is possible that other vehicles in front would trick the lane finder into thinking it was part of the lane. More work can be done to make the lane detector more robust, e.g. using deep learning to find pixels that are likely to be lane markers. Besides, we need to consider the computation cost which can be improved by using gpu and/or faster programing languages like c/c++. 
 
 Referencing The Project
 ---
