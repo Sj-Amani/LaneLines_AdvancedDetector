@@ -22,7 +22,7 @@ I saved the examples of the output from each stage of my pipeline in the folder 
 
 The `challenge_video.mp4` video is an extra challenge which I tested on my pipeline under somewhat trickier conditions. My proposed pipline works on it, too. 
 
-In this project, I used and improved the parts of this GitHub repo: https://github.com/georgesung/advanced_lane_detection.
+In this project, I used and improved the parts of this GitHub repo: https://github.com/georgesung/advanced_lane_detection. Compared to Georgesung, my code is more robust and can get good results for `challenge_video.mp4` (please see the output_video folder). Finally, please fell free and continue to develop this new code more and more. 
 
 ## Dependencies
 
