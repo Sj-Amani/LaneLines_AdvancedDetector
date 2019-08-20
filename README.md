@@ -18,11 +18,11 @@ The steps of this project are the following:
 
 The images for camera calibration are stored in the folder called `camera_cal`.  The images in `test_images` are for testing the pipeline on single frames.  If you want to extract more test images from the videos, you can simply use an image writing method like `cv2.imwrite()`, i.e., you can read the video in frame by frame as usual, and for frames you want to save for later you can write to an image file.  
 
-I saved the examples of the output from each stage of my pipeline in the folder called `output_images`, and included a description in my writeup for the project of what each image shows.    The video called `project_video.mp4` is the first video which my pipeline works well on it.  
+I saved the examples of the output from each stage of my pipeline in the folder called `output_images`, and included a description in my writeup for the project of what each image shows.    The video called `project_video.mp4` is the first video which my pipeline works well on it (please see the `output_video` folder).  
 
 The `challenge_video.mp4` video is an extra challenge which I tested on my pipeline under somewhat trickier conditions. My proposed pipline works on it, too. 
 
-In this project, I used and improved the parts of this GitHub repo: https://github.com/georgesung/advanced_lane_detection. Compared to Georgesung, my code is more robust and can get good results for `challenge_video.mp4` (please see the output_video folder). Finally, please fell free and continue to develop this new code more and more. 
+In this project, I used and improved the parts of this GitHub repo: https://github.com/georgesung/advanced_lane_detection. Compared to Georgesung, my code is more robust and can get good results for `challenge_video.mp4` (please see the `output_video` folder). Finally, please fell free and continue to develop this new code more and more. 
 
 ## Dependencies
 
